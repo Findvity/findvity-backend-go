@@ -94,7 +94,7 @@ func login(svc user.Service) fiber.Handler {
 		ctx.Status(http.StatusOK).JSON(fiber.Map{
 			"msg":   "login successful",
 			"token": token,
-			"user":  *user,
+			// "user":  *user,
 		})
 		return nil
 	}
