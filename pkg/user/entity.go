@@ -26,7 +26,7 @@ type User struct {
 	Username      string        `json:"username"`
 	Phone         string        `json:"phone"`
 	Age           int           `json:"age"`
-	Sex           Gender        `json:"gen	der"`
+	Sex           Gender        `json:"gender"`
 	Password      string        `json:"password"`
 	ProfileImgURL string        `json:"profile_img_url"`
 	Verified      bool          `json:"verified"`

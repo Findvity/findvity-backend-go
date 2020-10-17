@@ -58,6 +58,8 @@ func main() {
 		return nil
 	})
 
+	utils.MakeUserHandlers(app, db)
+
 	log.Fatal(app.Listen(":" + viper.GetString("PORT")))
 
 }

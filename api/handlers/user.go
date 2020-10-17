@@ -60,3 +60,9 @@ func registerUser(svc user.Service) fiber.Handler {
 		return nil
 	}
 }
+
+//UserEndpoints manage user endpoints
+func UserEndpoints(app *fiber.App, svc user.Service) {
+	app.Post("/api/user/create", registerUser(svc))
+
+}
