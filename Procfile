@@ -1,1 +1,1 @@
-web: bin/findvity-backend-go
+web: bin/findvity-backend
