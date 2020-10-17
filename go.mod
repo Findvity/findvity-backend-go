@@ -2,6 +2,8 @@ module github.com/BRO3886/findvity-backend
 
 go 1.15
 
+// +heroku goVersion go1.15
+
 require (
 	github.com/BRO3886/gin-learn v0.0.0-20200929084413-9c0a888f4c89
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
