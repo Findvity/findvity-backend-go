@@ -45,7 +45,6 @@ func (r *repo) AddMember(groupID, userID string) (*Group, error) {
 		return nil, pkg.ErrNotFound
 	}
 	group.MemberCount++
-	group.MemberIds = append(group.MemberIds, userID)
 	group, err := r.UpdateGroup(group)
 	if err != nil {
 		return nil, err

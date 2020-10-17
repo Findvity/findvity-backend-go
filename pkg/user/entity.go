@@ -30,6 +30,6 @@ type User struct {
 	Password      string        `json:"password"`
 	ProfileImgURL string        `json:"profile_img_url"`
 	Verified      bool          `json:"verified"`
-	Tags          []string      `json:"tags"`
-	Groups        []group.Group `json:"group"`
+	Tags          string        `json:"tags"`
+	Groups        []group.Group `json:"groups"`
 }
