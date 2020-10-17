@@ -6,7 +6,6 @@ import (
 	"os"
 
 	"github.com/lib/pq"
-	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -17,12 +16,12 @@ func ConnectDB() (*gorm.DB, error) {
 
 	//Heroku
 	if os.Getenv("DATABASE_URL") != "" {
-		return gorm.Open(postgres.Open(viper.GetString("DATABASE_URL")), &gorm.Config{
+		return gorm.Open(postgres.Open(os.Getenv("DATABASE_URL")), &gorm.Config{
 			Logger: logger.Default.LogMode(logger.Info),
 		})
 	}
 	//local
-	conn, err := pq.ParseURL(viper.GetString("DB_URI"))
+	conn, err := pq.ParseURL(os.Getenv("DB_URI"))
 	fmt.Println(conn)
 	if err != nil {
 		log.Fatal(err)

@@ -12,18 +12,23 @@ import (
 	"github.com/BRO3886/findvity-backend/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/spf13/viper"
+	"github.com/joho/godotenv"
 )
 
 func main() {
 	//set initial viper config
-	viper.SetConfigName(".env")
-	viper.SetConfigType("env")
-	viper.AddConfigPath(".")
+	// viper.SetConfigName(".env")
+	// viper.SetConfigType("env")
+	// viper.AddConfigPath(".")
 
 	//read .env
-	if err := viper.ReadInConfig(); err != nil {
-		log.Panicln(fmt.Errorf("fatal error config file: %s", err))
+
+	if os.Getenv("ON_SERVER") != "True" {
+		// Loading the .env file
+		err := godotenv.Load()
+		if err != nil {
+			log.Fatal("Error loading .env file")
+		}
 	}
 
 	//connect db and attach logger
@@ -60,6 +65,6 @@ func main() {
 
 	utils.MakeUserHandlers(app, db)
 
-	log.Fatal(app.Listen(":" + viper.GetString("PORT")))
+	log.Fatal(app.Listen(":" + os.Getenv("PORT")))
 
 }
