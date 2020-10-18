@@ -41,15 +41,26 @@ func (r *repo) CreateGroup(group *entities.Group) (*entities.Group, error) {
 }
 
 func (r *repo) AddMember(groupID, userID string) (*entities.Group, error) {
+	tx := r.DB.Begin()
 	group := &entities.Group{}
-	if err := r.DB.Where("id = ?", groupID).First(group).Error; err != nil {
-		return nil, pkg.ErrNotFound
-	}
-	group.MemberCount++
-	group, err := r.UpdateGroup(group)
+	user := &entities.User{}
+
+	//check if group exists
+	group, err := r.FindByID(groupID)
+
 	if err != nil {
 		return nil, err
 	}
+	//check user
+	if err = tx.Where("id=?", userID).Find(user).Error; err != nil {
+		tx.Rollback()
+		return nil, pkg.ErrDatabase
+	}
+	if err := tx.Find(group).Association("Users").Append(user).Error; err != nil {
+		tx.Rollback()
+		return nil, pkg.ErrDatabase
+	}
+	tx.Commit()
 	return group, nil
 }
 
