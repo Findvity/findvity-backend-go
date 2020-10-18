@@ -55,7 +55,7 @@ func main() {
 		return nil
 	})
 
-	utils.MakeUserHandlers(app, db)
+	utils.MakeHandlers(app, db)
 
 	log.Fatal(app.Listen(":" + os.Getenv("PORT")))
 

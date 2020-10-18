@@ -17,14 +17,14 @@ const (
 //User struct for user details
 type User struct {
 	Base
-	Name          string  `json:"name"`
-	Username      string  `json:"username"`
-	Phone         string  `json:"phone"`
-	Age           int     `json:"age"`
-	Sex           Gender  `json:"gender"`
-	Password      string  `json:"password"`
-	ProfileImgURL string  `json:"profile_img_url"`
-	Verified      bool    `json:"verified"`
-	Tags          string  `json:"tags"`
-	Groups        []Group `json:"groups" gorm:"many2many:user_groups;"`
+	Name          string   `json:"name"`
+	Username      string   `json:"username"`
+	Phone         string   `json:"phone"`
+	Age           int      `json:"age"`
+	Sex           Gender   `json:"gender"`
+	Password      string   `json:"password"`
+	ProfileImgURL string   `json:"profile_img_url"`
+	Verified      bool     `json:"verified"`
+	Tags          string   `json:"tags"`
+	Groups        []*Group `json:"-" gorm:"many2many:user_groups;"`
 }

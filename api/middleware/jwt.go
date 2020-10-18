@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/BRO3886/gin-learn/api"
+	"github.com/BRO3886/findvity-backend/api"
 	"github.com/gofiber/fiber/v2"
 
 	"github.com/dgrijalva/jwt-go"
@@ -13,7 +13,8 @@ import (
 
 //Token struct
 type Token struct {
-	ID uint32 `json:"id"`
+	ID       string `json:"id"`
+	Username string `json:"username"`
 	jwt.StandardClaims
 }
 
@@ -23,8 +24,10 @@ func BasicJWTAuth() fiber.Handler {
 		tokenHeader := string(ctx.Request().Header.Peek("Authorization"))
 
 		if tokenHeader == "" {
-			ctx.Status(http.StatusBadRequest).JSON(fiber.Map{"message": api.ErrTokenMissing.Error()})
-			return api.ErrTokenMissing
+			return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
+				"message": api.ErrTokenMissing.Error(),
+			})
+
 		}
 		tk := &Token{}
 		token, err := jwt.ParseWithClaims(tokenHeader, tk, func(t *jwt.Token) (interface{}, error) {
@@ -32,13 +35,25 @@ func BasicJWTAuth() fiber.Handler {
 		})
 
 		if err != nil || !token.Valid {
-			ctx.Status(http.StatusForbidden).JSON(fiber.Map{"message": api.ErrInvalidToken.Error()})
-
-			return api.ErrInvalidToken
+			return ctx.Status(http.StatusForbidden).JSON(fiber.Map{
+				"message": api.ErrInvalidToken.Error(),
+			})
 		}
-		ctx.Next()
-		return nil
+		return ctx.Next()
 	}
+}
+
+//GetUIDFromToken to get the token from handler
+func GetUIDFromToken(ctx *fiber.Ctx) string {
+	tokenHeader := string(ctx.Request().Header.Peek("Authorization"))
+	tk := &Token{}
+	_, err := jwt.ParseWithClaims(tokenHeader, tk, func(t *jwt.Token) (interface{}, error) {
+		return []byte(os.Getenv("jwtsecret")), nil
+	})
+	if err != nil {
+		return ""
+	}
+	return tk.Username
 }
 
 //CreateToken used to create JWT

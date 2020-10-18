@@ -1,6 +1,8 @@
 package group
 
 import (
+	"log"
+
 	"github.com/BRO3886/findvity-backend/pkg"
 	"github.com/BRO3886/findvity-backend/pkg/entities"
 	uuid "github.com/nu7hatch/gouuid"
@@ -13,6 +15,13 @@ type Repository interface {
 	CreateGroup(group *entities.Group) (*entities.Group, error)
 	AddMember(groupID, userID string) (*entities.Group, error)
 	UpdateGroup(group *entities.Group) (*entities.Group, error)
+}
+
+//NewRepo creates new repo
+func NewRepo(db *gorm.DB) Repository {
+	return &repo{
+		DB: db,
+	}
 }
 
 type repo struct {
@@ -46,18 +55,21 @@ func (r *repo) AddMember(groupID, userID string) (*entities.Group, error) {
 	user := &entities.User{}
 
 	//check if group exists
-	group, err := r.FindByID(groupID)
-
-	if err != nil {
-		return nil, err
-	}
-	//check user
-	if err = tx.Where("id=?", userID).Find(user).Error; err != nil {
+	if err := tx.Where("id=?", groupID).First(&group).Error; err != nil {
 		tx.Rollback()
+		log.Println("user not found")
 		return nil, pkg.ErrDatabase
 	}
-	if err := tx.Find(group).Association("Users").Append(user).Error; err != nil {
+	//check user
+	if err := tx.Where("id=?", userID).First(&user).Error; err != nil {
 		tx.Rollback()
+		log.Println("user not found")
+		return nil, pkg.ErrDatabase
+	}
+	if err := tx.Find(user).Association("Groups").Append(group).Error; err != nil {
+		tx.Rollback()
+		print(err)
+		log.Println("unable to add to m2m")
 		return nil, pkg.ErrDatabase
 	}
 	tx.Commit()
