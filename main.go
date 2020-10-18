@@ -6,9 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/BRO3886/findvity-backend/pkg/event"
-	"github.com/BRO3886/findvity-backend/pkg/group"
-	"github.com/BRO3886/findvity-backend/pkg/user"
+	"github.com/BRO3886/findvity-backend/pkg/entities"
 	"github.com/BRO3886/findvity-backend/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -16,13 +14,7 @@ import (
 )
 
 func main() {
-	//set initial viper config
-	// viper.SetConfigName(".env")
-	// viper.SetConfigType("env")
-	// viper.AddConfigPath(".")
-
 	//read .env
-
 	if os.Getenv("ON_SERVER") != "True" {
 		// Loading the .env file
 		err := godotenv.Load()
@@ -38,7 +30,7 @@ func main() {
 	}
 
 	//perform migrations
-	db.AutoMigrate(&user.User{}, &event.Event{}, &group.Group{})
+	db.AutoMigrate(&entities.User{}, &entities.Event{}, &entities.Group{})
 	log.Println("connected to db")
 
 	//close db connection

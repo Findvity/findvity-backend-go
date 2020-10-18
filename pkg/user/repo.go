@@ -2,17 +2,18 @@ package user
 
 import (
 	"github.com/BRO3886/findvity-backend/pkg"
+	"github.com/BRO3886/findvity-backend/pkg/entities"
 	uuid "github.com/nu7hatch/gouuid"
 	"gorm.io/gorm"
 )
 
 //Repository for `user`
 type Repository interface {
-	FindByID(id string) (*User, error)
+	FindByID(id string) (*entities.User, error)
 
-	FindByUsername(username string) (*User, error)
+	FindByUsername(username string) (*entities.User, error)
 
-	CreateUser(user *User) (*User, error)
+	CreateUser(user *entities.User) (*entities.User, error)
 
 	DoesUsernameExist(username string) (bool, error)
 }
@@ -28,8 +29,8 @@ func NewRepo(db *gorm.DB) Repository {
 	}
 }
 
-func (r *repo) FindByID(id string) (*User, error) {
-	user := &User{}
+func (r *repo) FindByID(id string) (*entities.User, error) {
+	user := &entities.User{}
 	r.DB.Where("id = ?", id).First(user)
 	if user.Name == "" {
 		return nil, pkg.ErrNotFound
@@ -37,8 +38,8 @@ func (r *repo) FindByID(id string) (*User, error) {
 	return user, nil
 }
 
-func (r *repo) FindByUsername(username string) (*User, error) {
-	user := &User{}
+func (r *repo) FindByUsername(username string) (*entities.User, error) {
+	user := &entities.User{}
 	r.DB.Where("username = ?", username).First(user)
 	if user.Name == "" {
 		return nil, pkg.ErrNotFound
@@ -46,7 +47,7 @@ func (r *repo) FindByUsername(username string) (*User, error) {
 	return user, nil
 }
 
-func (r *repo) CreateUser(user *User) (*User, error) {
+func (r *repo) CreateUser(user *entities.User) (*entities.User, error) {
 	uid, err := uuid.NewV4()
 	if err != nil {
 		return nil, pkg.ErrDatabase
@@ -60,7 +61,7 @@ func (r *repo) CreateUser(user *User) (*User, error) {
 }
 
 func (r *repo) DoesUsernameExist(username string) (bool, error) {
-	user := &User{}
+	user := &entities.User{}
 	if err := r.DB.Where("username = ?", username).First(user).Error; err != nil {
 		return false, pkg.ErrNotFound
 	}

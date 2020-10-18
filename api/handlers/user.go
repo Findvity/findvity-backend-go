@@ -4,13 +4,14 @@ import (
 	"net/http"
 
 	"github.com/BRO3886/findvity-backend/api/middleware"
+	"github.com/BRO3886/findvity-backend/pkg/entities"
 	"github.com/BRO3886/findvity-backend/pkg/user"
 	"github.com/gofiber/fiber/v2"
 )
 
 func register(svc user.Service) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
-		user := &user.User{}
+		user := &entities.User{}
 
 		if err := ctx.BodyParser(&user); err != nil {
 			ctx.Status(http.StatusUnprocessableEntity).JSON(fiber.Map{
@@ -63,7 +64,7 @@ func register(svc user.Service) fiber.Handler {
 
 func login(svc user.Service) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
-		user := &user.User{}
+		user := &entities.User{}
 		if err := ctx.BodyParser(&user); err != nil {
 			ctx.Status(http.StatusUnprocessableEntity).JSON(fiber.Map{
 				"msg":   "unable to parse json",
